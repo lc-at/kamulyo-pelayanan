@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+  <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark" x-data>
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        Kamulyo
+        <small><span class="badge bg-danger small">adm</span></small>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav me-auto">
+          {%- macro nav_item(title, ref, ref_is_route=True) -%}
+            {%- set active = (request.endpoint == route) %}
+            <li class="nav-item {% if active %}active{% endif %}>">
+              <a class="nav-link" href="{{ url_for(ref) if ref_is_route else ref }}">
+                {{ title }}
+                {%- if active %}<span class="visually-hidden">(current)</span>{% endif %}
+              </a>
+            </li>
+          {%- endmacro -%}
+
+          {{ nav_item('Dasbor', 'main.index') }}
+          {{ nav_item('Tiket Terbuka', 'main.index') }}
+          {{ nav_item('Tiket Selesai', 'main.index') }}
+          {{ nav_item('Pengguna', 'main.index') }}
+
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          {{ nav_item('Ganti Password', 'main.index') }}
+          {{ nav_item('Keluar', 'main.index') }}
+        </ul>
+      </div>
+    </div>
+  </nav>
+{% endblock %}

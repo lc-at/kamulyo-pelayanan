@@ -1,0 +1,7 @@
+flask
+flask-sqlalchemy
+gunicorn
+hashids
+passlib
+pymysql
+requests

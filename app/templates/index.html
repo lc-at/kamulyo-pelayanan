@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block container %}
+  <div class="container-fluid bg-light p-5 mb-3 rounded-3">
+    <h1 class="font-bold">Layanan Kamulyo</h1>
+    <p>Satu formulir untuk semuanya.</p>
+  </div>
+
+  <form method="post" class="">
+    <div class="mb-3">
+      <label class="form-label" for="jenis">Jenis:</label>
+      <select name="jenis" id="jenis" class="form-select">
+        <option value="pengaduan">Pengaduan</option>
+        <option value="pengajuan">Pengajuan</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="nama">Nama:</label>
+      <input
+          type="text"
+          class="form-control"
+          id="nama"
+          name="nama"
+          placeholder="Masukkan nama lengkap Anda"
+          required
+          autofocus
+          />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="nomorHp">Nomor HP:</label>
+      <input
+          type="text"
+          class="form-control"
+          id="nomorHp"
+          name="nomorHp"
+          placeholder="mis. 085123339929"
+          required
+          />
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="subjek">Subjek:</label>
+      <input
+          type="text"
+          class="form-control"
+          id="subjek"
+          name="subjek"
+          placeholder="mis. Permohonan Izin Surat Keterangan Meninggal Dunia"
+          required
+          />
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="narasi">Narasi:</label>
+      <textarea
+          class="form-control"
+          id="narasi"
+          name="narasi"
+          minlength="20"
+          required
+          /></textarea>
+    </div>
+    <button type="submit" class="btn btn-lg btn-primary">Kirim</button>
+  </form>
+{% endblock %}
