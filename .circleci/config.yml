@@ -20,3 +20,4 @@ workflows:
           deploy: true
           image: f512/kamulyo-pelayanan
           tag: latest
+      - deploy
