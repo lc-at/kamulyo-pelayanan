@@ -9,9 +9,9 @@ jobs:
     steps:
       - run:
           name: Deploy over SSH
-          command: |
-            ssh -o StrictHostKeyChecking=no |
-            root@kamulyo.port0.org |
+          command: >
+            ssh -o StrictHostKeyChecking=no
+            root@kamulyo.port0.org
             ./deploy-kamulyo-pelayanan.sh
 
 workflows:
