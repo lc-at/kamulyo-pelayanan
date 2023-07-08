@@ -2,6 +2,17 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.2.0
 
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base
+    steps:
+      - run:
+          command: |
+            ssh -o StrictHostKeyChecking=no |
+            root@kamulyo.port0.org |
+            ./deploy-kamulyo-pelayanan.sh
+
 workflows:
   commit:
     jobs:
