@@ -7,5 +7,5 @@ workflows:
     jobs:
       - docker/publish:
           deploy: true
-          image: 'f512/kamulyo-pelayanan'
+          image: 'f512/kamulyopelayanan'
           use-remote-docker: true
