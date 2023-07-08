@@ -24,3 +24,7 @@ workflows:
       - deploy:
           requires:
             - docker/publish
+          filters:
+            branches:
+              only:
+                - main
