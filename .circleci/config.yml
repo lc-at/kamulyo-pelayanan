@@ -5,9 +5,10 @@ orbs:
 jobs:
   deploy:
     docker:
-      - image: cimg/base
+      - image: cimg/base:current
     steps:
       - run:
+          name: Deploy over SSH
           command: |
             ssh -o StrictHostKeyChecking=no |
             root@kamulyo.port0.org |
@@ -20,4 +21,6 @@ workflows:
           deploy: true
           image: f512/kamulyo-pelayanan
           tag: latest
-      - deploy
+      - deploy:
+          requires:
+            - docker/publish
