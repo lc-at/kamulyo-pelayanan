@@ -6,6 +6,4 @@ workflows:
   commit:
     jobs:
       - docker/publish:
-          deploy: true
           image: 'f512/kamulyopelayanan'
-          use-remote-docker: true
