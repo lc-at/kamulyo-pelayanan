@@ -7,3 +7,4 @@ workflows:
     jobs:
       - docker/publish:
           image: 'f512/kamulyopelayanan'
+          deploy: true
