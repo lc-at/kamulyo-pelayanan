@@ -6,6 +6,6 @@ workflows:
   commit:
     jobs:
       - docker/publish:
+          deploy: true
           image: f512/kamulyo-pelayanan
           tag: latest
-          deploy: true
