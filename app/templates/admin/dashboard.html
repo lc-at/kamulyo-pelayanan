@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block container %}
+  <h1>Dasbor</h1><br/>
+
+  <p class="mb-4">Anda masuk sebagai <strong>{{ g.user.username }}</strong></p>
+
+  <div class="row">
+    {% macro stat_card(bg, fg, title, value) %}
+      <div class="col text-center">
+        <div class="card bg-{{bg}} text-{{fg}} mb-3 w-100">
+          <div class="card-header">{{ title }}</div>
+          <div class="card-body">
+            <h4 class="card-title display-1">{{ value }}</h4>
+            <p class="card-text">
+            <button class="btn btn-secondary w-100">Lihat semua</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endmacro %}
+
+    {{ stat_card('danger', 'white', 'Tiket Baru', 0) }}
+    {{ stat_card('info', 'white', 'Tiket Terbuka', 0) }}
+    {{ stat_card('success', 'white', 'Tiket Selesai', 0) }}
+  </div>
+{% endblock %}

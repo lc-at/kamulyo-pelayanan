@@ -34,7 +34,7 @@
 
             </ul>
             <form class="d-flex" action="{{ url_for('main.cari_tiket') }}">
-              <input class="form-control me-sm-2" type="search" x-ref="inpIdTiket" name="idTiket" placeholder="ID Tiket">
+              <input class="form-control me-2" type="search" x-ref="inpIdTiket" name="idTiket" placeholder="ID Tiket">
               <input type="hidden" name="next" value="{{ request.path }}">
               <button class="btn btn-secondary my-2 my-sm-0" type="submit">Cari</button>
             </form>

@@ -24,35 +24,35 @@ def index():
             else:
                 db.session.add(tiket)
                 db.session.commit()
-                return redirect(url_for('main.form_next', id_tiket=tiket.public_id))
+                return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
 
     return render_template('index.html')
 
 
-@bp.route('/next/<id_tiket>')
-@hashids.decode_or_404('id_tiket', first=True)
-def form_next(id_tiket):
-    tiket = Tiket.query.filter_by(id=id_tiket).first_or_404()
+@bp.route('/next/<tiket_id>')
+@hashids.decode_or_404('tiket_id', first=True)
+def form_next(tiket_id):
+    tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
     return render_template('form_next.html', tiket=tiket)
 
 
 @bp.route('/tiket')
 def cari_tiket():
-    id_tiket = request.args.get('idTiket')
+    tiket_id = request.args.get('idTiket')
     next_url = request.args.get('next', '/')
 
-    if not id_tiket:
+    if not tiket_id:
         flash('ID tiket tidak boleh kosong!', 'danger')
         return redirect(next_url)
 
-    id_tiket = hashids.decode(id_tiket.strip().upper())
-    if not id_tiket:
+    tiket_id = hashids.decode(tiket_id.strip().upper())
+    if not tiket_id:
         flash('ID tiket tidak valid!', 'danger')
         return redirect(next_url)
 
-    tiket = Tiket.query.filter_by(id=id_tiket[0]).first()
+    tiket = Tiket.query.filter_by(id=tiket_id[0]).first()
     if not tiket:
         flash('Tiket tidak ditemukan!', 'danger')
         return redirect(next_url)
 
-    return redirect(url_for('main.form_next', id_tiket=tiket.public_id))
+    return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
