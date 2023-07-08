@@ -8,4 +8,4 @@ workflows:
       - docker/publish:
           deploy: true
           image: f512/kamulyo-pelayanan
-          use-remote-docker: true
+          tag: latest
