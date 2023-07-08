@@ -21,3 +21,7 @@ workflows:
   example-workflow:
     jobs:
       - example-job
+      - docker/publish:
+          image: f512/kamulyo-pelayanan
+          lint-dockerfile: false
+          use-remote-docker: false
