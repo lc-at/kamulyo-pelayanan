@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+
+{% block container %}
+  <h1>Tiket Terbuka</h1><br/>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID Tiket</th>
+          <th scope="col">Dibuat</th>
+          <th scope="col">Pengirim</th>
+          <th scope="col">Subjek</th>
+          <th scope="col">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for tiket in tikets %}
+        <tr>
+          <th scope="row">{{ tiket.public_id }}</th>
+          <td>{{ tiket.tgl_dibuat }}</td>
+          <td>{{ tiket.nama_pengirim }}</td>
+          <td>[{{ tiket.jenis | upper }}] {{ tiket.subjek }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm">Lihat</button>
+          </td>
+        </tr>
+        {% endfor -%}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

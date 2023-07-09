@@ -1,6 +1,5 @@
 import enum
 import re
-import uuid
 
 from typing import Union
 
@@ -50,6 +49,12 @@ class Tiket(db.Model):
     nohp_pengirim = db.Column(db.String(20), nullable=False)
     subjek = db.Column(db.String(255), nullable=False)
     narasi = db.Column(db.String(255), nullable=False)
+    selesai = db.Column(db.Boolean, nullable=False, default=False)
+    tgl_dibuat = db.Column(
+        db.DateTime, nullable=False, server_default=db.func.now())
+    statuss = db.relationship('StatusTiket',
+                              backref='tiket',
+                              lazy=True)
 
     def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi):
         self.jenis = jenis
@@ -72,3 +77,16 @@ class Tiket(db.Model):
             return False
 
         return True
+
+
+class StatusTiket(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    tiket_id = db.Column(db.Integer, db.ForeignKey('tiket.id'), nullable=False)
+    status = db.Column(db.Text, nullable=False)
+    tgl_dibuat = db.Column(db.DateTime,
+                           nullable=False,
+                           server_default=db.func.now())
+
+    def __init__(self, tiket_id, status):
+        self.tiket_id = tiket_id
+        self.status = status

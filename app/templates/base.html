@@ -17,7 +17,7 @@
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav me-auto">
               {%- macro nav_item(title, ref, ref_is_route=True) -%}
-                {%- set active = (request.endpoint == route) %}
+                {%- set active = (request.endpoint == ref) %}
                 <li class="nav-item {% if active %}active{% endif %}>">
                   <a class="nav-link" href="{{ url_for(ref) if ref_is_route else ref }}">
                     {{ title }}

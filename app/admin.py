@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, flash, g, redirect, render_template, request, session, url_for
 
-from app.models import User
+from app.models import Tiket, User
 
 bp = Blueprint('admin', __name__)
 
@@ -46,7 +46,7 @@ def login():
 def logout():
     if g.user:
         del session['user_id']
-        flash('Anda telah logout', 'success')
+        flash('Anda telah keluar', 'success')
     return redirect(url_for('admin.login'))
 
 
@@ -72,3 +72,8 @@ def change_password():
 @bp.route('/dashboard')
 def dashboard():
     return render_template('admin/dashboard.html')
+
+@bp.route('/tiket-terbuka')
+def tiket_terbuka():
+    tikets = Tiket.query.all()
+    return render_template('admin/tabel_tiket.html', tikets=tikets)
