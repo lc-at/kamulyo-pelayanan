@@ -51,10 +51,10 @@ class Tiket(db.Model):
     narasi = db.Column(db.String(255), nullable=False)
     selesai = db.Column(db.Boolean, nullable=False, default=False)
     tgl_dibuat = db.Column(
-        db.DateTime, nullable=False, server_default=db.func.now())
-    statuss = db.relationship('StatusTiket',
-                              backref='tiket',
-                              lazy=True)
+            db.DateTime, nullable=False, server_default=db.func.now())
+    balasans = db.relationship('BalasanTiket',
+                               backref='tiket',
+                               lazy=True)
 
     def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi):
         self.jenis = jenis
@@ -79,14 +79,14 @@ class Tiket(db.Model):
         return True
 
 
-class StatusTiket(db.Model):
+class BalasanTiket(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tiket_id = db.Column(db.Integer, db.ForeignKey('tiket.id'), nullable=False)
-    status = db.Column(db.Text, nullable=False)
+    isi = db.Column(db.Text, nullable=False)
     tgl_dibuat = db.Column(db.DateTime,
                            nullable=False,
                            server_default=db.func.now())
 
-    def __init__(self, tiket_id, status):
+    def __init__(self, tiket_id, isi):
         self.tiket_id = tiket_id
-        self.status = status
+        self.isi = isi

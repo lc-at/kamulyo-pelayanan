@@ -1,10 +1,10 @@
 {% extends "admin/base.html" %}
 
 {% block container %}
-  <h1>Tiket Terbuka</h1><br/>
+  <h1>{{ title }}</h1><br/>
 
   <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped table-sm">
       <thead>
         <tr>
           <th scope="col">ID Tiket</th>
@@ -17,12 +17,12 @@
       <tbody>
         {%- for tiket in tikets %}
         <tr>
-          <th scope="row">{{ tiket.public_id }}</th>
+          <th class="font-monospace" scope="row">{{ tiket.public_id }}</th>
           <td>{{ tiket.tgl_dibuat }}</td>
           <td>{{ tiket.nama_pengirim }}</td>
           <td>[{{ tiket.jenis | upper }}] {{ tiket.subjek }}</td>
           <td>
-            <button class="btn btn-primary btn-sm">Lihat</button>
+            <a role="button" class="btn btn-primary btn-sm" href="{{ url_for('admin.tiket_detail', tiket_id=tiket.id) }}">Lihat</button>
           </td>
         </tr>
         {% endfor -%}
