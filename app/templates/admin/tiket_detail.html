@@ -44,7 +44,7 @@
   </div>
 
   <h2>Aksi</h2>
-  <form method="post">
+  <form method="post" action="{{ url_for('admin.tiket_tambah_balasan', tiket_id=tiket.id) }}">
     <label class="form-label">Tambah balasan baru</label>
     <div class="row">
       <div class="col-sm-11 mb-3">
