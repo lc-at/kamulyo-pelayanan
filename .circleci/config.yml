@@ -11,8 +11,8 @@ jobs:
           name: Deploy over SSH
           command: >
             ssh -o StrictHostKeyChecking=no
-            root@kamulyo.port0.org
-            ./deploy-kamulyo-pelayanan.sh
+            ${DEPLOY_SERVER_SSH_USERNAME}@${DEPLOY_SERVER_SSH_HOST}
+            ${DEPLOY_SERVER_SSH_COMMAND}
 
 workflows:
   commit:
