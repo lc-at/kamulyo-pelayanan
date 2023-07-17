@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" x-data>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="{{ url_for('static', filename='logo.svg') }}" height="25" />
+      KamulyoPelayanan
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav me-auto">
+        {%- macro nav_item(title, ref, ref_is_route=True) -%}
+        {%- set active = (request.endpoint == ref) %}
+        <li class="nav-item {% if active %}active{% endif %}>">
+          <a class="nav-link" href="{{ url_for(ref) if ref_is_route else ref }}">
+            {{ title }}
+            {%- if active %}<span class="visually-hidden">(current)</span>{% endif %}
+          </a>
+        </li>
+        {%- endmacro -%}
+
+        {{ nav_item('Buat Tiket', 'main.index') }}
+        {{ nav_item('Web Utama', 'main.index') }}
+        {{ nav_item('FAQ', '#', False) }}
+
+        <li class="nav-item"><a class="nav-link" href="#" x-on:click="$refs.inpIdTiket.focus()">Cek Status</a></li>
+
+      </ul>
+      <form class="d-flex" action="{{ url_for('main.cari_tiket') }}">
+        <input class="form-control me-2" type="search" x-ref="inpIdTiket" name="idTiket" placeholder="ID Tiket">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Cari</button>
+      </form>
+    </div>
+  </div>
+</nav>
+

@@ -1,6 +1,9 @@
 {% extends "admin/base.html" %}
 
 {% block container %}
+  <div class="text-center">
+    <img src="{{ url_for('static', filename='logo.svg') }}" height="150" />
+  </div>
   <h1>Masuk</h1><br/>
 
   <form method="post">

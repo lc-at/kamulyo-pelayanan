@@ -14,11 +14,12 @@ def index():
         nohp = request.form.get('nomorHp')
         subjek = request.form.get('subjek')
         narasi = request.form.get('narasi')
+        is_publik = request.form.get('isPublik') == '1'
 
         if not (jenis and nama and nohp and subjek and narasi):
             flash('Data tidak lengkap!', 'danger')
         else:
-            tiket = Tiket(jenis, nama, nohp, subjek, narasi)
+            tiket = Tiket(jenis, nama, nohp, subjek, narasi, is_publik)
             if not tiket.validate():
                 flash('Data tidak valid!', 'danger')
             else:
@@ -38,21 +39,23 @@ def form_next(tiket_id):
 
 @bp.route('/tiket')
 def cari_tiket():
-    tiket_id = request.args.get('idTiket')
+    tiket_public_id = request.args.get('idTiket')
     next_url = request.args.get('next', '/')
 
-    if not tiket_id:
+    if not tiket_public_id:
         flash('ID tiket tidak boleh kosong!', 'danger')
         return redirect(next_url)
 
-    tiket_id = hashids.decode(tiket_id.strip().upper())
-    if not tiket_id:
-        flash('ID tiket tidak valid!', 'danger')
-        return redirect(next_url)
-
-    tiket = Tiket.query.filter_by(id=tiket_id[0]).first()
+    tiket = Tiket.from_public_id(tiket_public_id)
     if not tiket:
         flash('Tiket tidak ditemukan!', 'danger')
         return redirect(next_url)
 
-    return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
+    return redirect(url_for('main.status_tiket', tiket_id=tiket.public_id))
+
+
+@bp.route('/tiket/<tiket_id>')
+@hashids.decode_or_404('tiket_id', first=True)
+def status_tiket(tiket_id):
+    tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
+    return render_template('status_tiket.html', tiket=tiket)

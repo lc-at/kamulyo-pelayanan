@@ -44,6 +44,7 @@ class JenisTiket(str, enum.Enum):
 
 class Tiket(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    is_publik = db.Column(db.Boolean, nullable=False, default=False)
     jenis = db.Column(db.String(100), nullable=False)
     nama_pengirim = db.Column(db.String(255), nullable=False)
     nohp_pengirim = db.Column(db.String(20), nullable=False)
@@ -51,17 +52,18 @@ class Tiket(db.Model):
     narasi = db.Column(db.String(255), nullable=False)
     selesai = db.Column(db.Boolean, nullable=False, default=False)
     tgl_dibuat = db.Column(
-            db.DateTime, nullable=False, server_default=db.func.now())
+        db.DateTime, nullable=False, server_default=db.func.now())
     balasans = db.relationship('BalasanTiket',
                                backref='tiket',
                                lazy=True)
 
-    def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi):
+    def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi, is_publik):
         self.jenis = jenis
         self.nama_pengirim = nama_pengirim
         self.nohp_pengirim = nohp_pengirim
         self.subjek = subjek
         self.narasi = narasi
+        self.is_publik = is_publik
 
     @property
     def public_id(self):
@@ -77,6 +79,19 @@ class Tiket(db.Model):
             return False
 
         return True
+
+    @staticmethod
+    def clean_public_id(tiket_public_id: str):
+        return re.sub(r'[^A-Z0-9]', '', tiket_public_id.upper())
+
+    @classmethod
+    def from_public_id(cls, tiket_public_id):
+        tiket_public_id = cls.clean_public_id(tiket_public_id)
+        public_tiket_id_decoded = hashids.decode(tiket_public_id)
+        if not public_tiket_id_decoded:
+            return None
+        # tiket_id is the first
+        return cls.query.get(public_tiket_id_decoded[0])
 
 
 class BalasanTiket(db.Model):
