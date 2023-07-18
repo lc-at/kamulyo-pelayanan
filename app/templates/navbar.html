@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" x-data>
+<nav class="navbar navbar-expand-lg bg-light border border-bottom-1" data-bs-theme="light" x-data>
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">
       <img src="{{ url_for('static', filename='logo.svg') }}" height="25" />
       KamulyoPelayanan
     </a>
@@ -20,7 +20,7 @@
         {%- endmacro -%}
 
         {{ nav_item('Buat Tiket', 'main.index') }}
-        {{ nav_item('Web Utama', 'main.index') }}
+        {{ nav_item('Papan Aduan Publik', 'main.index') }}
         {{ nav_item('FAQ', '#', False) }}
 
         <li class="nav-item"><a class="nav-link" href="#" x-on:click="$refs.inpIdTiket.focus()">Cek Status</a></li>

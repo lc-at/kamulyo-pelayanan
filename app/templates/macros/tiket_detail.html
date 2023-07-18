@@ -1,0 +1,44 @@
+{% macro tiket_detail_table(tiket) %}
+<div class="table-responsive" x-data="{ show: true }">
+  <table class="table table-striped table-sm">
+    {% macro detail_row(key, value, extra_class="") %}
+    <tr>
+      <td class="{{ extra_class }}">{{ key }}</td>
+      <td class="{{ extra_class }}">{{ value }}</td>
+    </tr>
+    {% endmacro %} {{ detail_row('Subjek', tiket.subjek, extra_class="fs-5
+    fw-bold") }} {{ detail_row('ID Tiket Publik', tiket.public_id) }} {{
+    detail_row('Nama Pengirim', tiket.nama_pengirim) }} {{ detail_row('No HP
+    Pengirim', tiket.nohp_pengirim) }} {{ detail_row('Tanggal dibuat',
+    tiket.tgl_dibuat) }}
+  </table>
+  <label class="form-label">
+    Narasi:
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      @click="show = !show"
+      x-text="show ? 'Sembunyikan' : 'Tampilkan'"
+    ></button>
+  </label>
+  <div class="border border-info rounded-2 p-3 font-monospace" x-show="show">
+    {{ tiket.narasi }}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro tiket_balasan_table(tiket) %}
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <tr>
+      <th>Tanggal</th>
+      <th>Isi balasan</th>
+    </tr>
+    {% for balasan in tiket.balasans %}
+    <tr>
+      <td>{{ balasan.tgl_dibuat }}</td>
+      <td>{{ balasan.isi }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endmacro %}
