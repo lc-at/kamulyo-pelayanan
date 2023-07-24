@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block container %}
+<h1 class="mb-3">Papan Aduan Publik</h1>
+
+<div class="list-group">
+  {% for tiket in tikets %}
+  <a href="{{ url_for('main.status_tiket', tiket_id=tiket.public_id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">
+        {{ tiket.subjek }}
+        <p class="badge bg-danger">Belum Selesai</p>
+      </h5>
+      <small class="text-muted">{{ tiket.tgl_dibuat }}</small>
+    </div>
+    <p class="mb-1">{{ tiket.narasi }}</p>
+    <small class="text-muted">Balasan: 10, Viewer: 100</small>
+  </a>
+  {% endfor %}
+</div>
+
+{% endblock %}

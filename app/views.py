@@ -59,3 +59,9 @@ def cari_tiket():
 def status_tiket(tiket_id):
     tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
     return render_template('status_tiket.html', tiket=tiket)
+
+
+@bp.route('/papan-aduan-publik')
+def papan_aduan_publik():
+    tikets = Tiket.query.filter_by(is_publik=True).all()
+    return render_template('papan_aduan_publik.html', tikets=tikets)
