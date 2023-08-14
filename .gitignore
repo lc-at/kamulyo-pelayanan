@@ -171,3 +171,7 @@ cython_debug/
 # Temp files (for testing)
 /.data.db
 /config.toml
+
+
+# node files for prettier
+node_modules/

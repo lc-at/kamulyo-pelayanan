@@ -1,13 +1,17 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from functools import wraps
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from app.models import Tiket, db, hashids
 
 
 bp = Blueprint('main', __name__)
 
-
-@bp.route('/', methods=['GET', 'POST'])
+@bp.route('/')
 def index():
+    return redirect(url_for('main.buat_tiket_form'))
+
+@bp.route('/buat-tiket', methods=['GET', 'POST'])
+def buat_tiket_form():
     if request.method == 'POST':
         jenis = request.form.get('jenis')
         nama = request.form.get('nama')
@@ -15,6 +19,7 @@ def index():
         subjek = request.form.get('subjek')
         narasi = request.form.get('narasi')
         is_publik = request.form.get('isPublik') == '1'
+        # TODO: add hcaptcha validation
 
         if not (jenis and nama and nohp and subjek and narasi):
             flash('Data tidak lengkap!', 'danger')
@@ -28,7 +33,6 @@ def index():
                 return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
 
     return render_template('index.html')
-
 
 @bp.route('/next/<tiket_id>')
 @hashids.decode_or_404('tiket_id', first=True)

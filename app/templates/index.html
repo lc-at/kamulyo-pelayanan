@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block container %}
+{% extends "base.html" %}
+{% block container %}
   <div class="container-fluid bg-light p-4 p-sm-5 mb-3 rounded-3">
     <h1 class="font-bold">Buat Tiket</h1>
     <p>Satu formulir untuk semuanya.</p>
@@ -16,66 +17,213 @@
       <div class="mb-3">
         <label class="form-label" for="nama">Nama:</label>
         <input
-            type="text"
-            class="form-control"
-            id="nama"
-            name="nama"
-            placeholder="Masukkan nama lengkap Anda"
-            required
-            autofocus
-            />
+          type="text"
+          class="form-control"
+          id="nama"
+          name="nama"
+          placeholder="Masukkan nama lengkap Anda"
+          required
+          autofocus
+        />
       </div>
 
-      <div class="mb-3" x-data="{ nomorHp: '', first: true }">
+      <div class="mb-3" x-data="{ nomorHp: '', first: true, verified: false }">
         <label class="form-label" for="nomorHp">Nomor WhatsApp:</label>
         <input
-            type="text"
-            class="form-control"
-            id="nomorHp"
-            name="nomorHp"
-            placeholder="mis. 085123339929"
-            x-model="nomorHp"
-            x-on:keyup="first = false"
-            x-bind:class="{ 'is-invalid': !isNomorHpValid(nomorHp) && !first}"
-            required
-            />
+          type="text"
+          class="form-control"
+          id="nomorHp"
+          name="nomorHp"
+          placeholder="mis. 085123339929"
+          x-model="nomorHp"
+          x-on:keyup="first = false"
+          x-bind:class="{ 'is-invalid': !isNomorHpValid(nomorHp) && !first,
+                          'is-valid': verified }"
+          x-bind:readonly="verified"
+          required
+        />
         <div class="invalid-feedback">
           Nomor WhatsApp tidak valid! Pastikan mengikuti format 08xxxxxxxxxx.
         </div>
+        <div class="valid-feedback">
+          Nomor WhatsApp sudah diverifikasi
+        </div>
+
+        <div
+          class="modal fade"
+          id="verifyPhoneModal"
+          role="dialog"
+          x-data="{ inputOtp: '',
+            sendOtpStatus: 'Belum dikirimkan',
+            getAuthTokenStatus: '',
+            authToken: '',}"
+        >
+          <input type="hidden" x-model="authToken" name="authToken" />
+
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Verifikasi Nomor WhatsApp</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <ol>
+                  <li>
+                    <p>
+                      Tekan tombol berikut untuk mengirimkan kode verifikasi ke
+                      nomor WhatsApp Anda.
+                    </p>
+                    <p>
+                      <button
+                        type="button"
+                        x-on:click="
+                        sendOtpStatus = 'Sedang mengirimkan kode verifikasi...';
+                        fetchSendOtp(nomorHp).then((data) => {
+                          sendOtpStatus = data.message;
+                        }).catch((error) => {
+                          sendOtpStatus = 'Gagal mengirimkan kode verifikasi.'
+                        })"
+                        class="btn btn-sm btn-primary"
+                      >
+                        Kirim kode verifikasi
+                      </button>
+                      <small class="text-muted"
+                        >Status: <span x-text="sendOtpStatus"></span
+                      ></small>
+                    </p>
+                  </li>
+                  <script>
+                    function fetchSendOtp(nomorWhatsapp) {
+                      return fetch("/api/whatsapp_verification/otp", {
+                        method: "POST",
+                        body: `nomorWhatsapp=${nomorWhatsapp}`,
+                        headers: {
+                          "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                      }).then((response) => response.json());
+                    }
+                  </script>
+
+                  <li>
+                    <p>
+                      Masukkan kode verifikasi yang dikirimkan ke nomor WhatsApp
+                      Anda.
+                    </p>
+                    <p>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Kode verifikasi"
+                        x-model="inputOtp"
+                      />
+                    </p>
+                  </li>
+                </ol>
+              </div>
+
+              <div class="modal-footer">
+                <span x-text="getAuthTokenStatus"></span>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  x-bind:disabled="inputOtp.length < 4"
+                  x-on:click="
+                    getAuthTokenStatus = 'Memeriksa kode verifikasi...';
+                    fetchGetAuthToken(nomorHp, inputOtp).then((data) => {
+                      getAuthTokenStatus = data.message;
+                      if (data.auth_token) {
+                        authToken = data.auth_token;
+                        verified = true;
+                        bootstrap.Modal.getInstance(document.getElementById('verifyPhoneModal')).hide();
+                      }
+                    }).catch((error) => {
+                      getAuthTokenStatus = 'Gagal memverifikasi kode verifikasi.'
+                    })"
+                >
+                  Selesai
+                </button>
+
+                <script>
+                  function fetchGetAuthToken(nomorWhatsapp, inputOtp) {
+                    const requestParams = `nomorWhatsapp=${nomorWhatsapp}&otp=${inputOtp}`;
+                    return fetch(
+                      `/api/whatsapp_verification/auth_token?${requestParams}`,
+                    ).then(function (response) {
+                      return response.json();
+                    });
+                  }
+                </script>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          data-bs-toggle="modal"
+          data-bs-target="#verifyPhoneModal"
+          class="btn btn-sm btn-outline-secondary mt-2"
+          type="button"
+          x-show="isNomorHpValid(nomorHp) && !verified"
+        >
+          Verifikasi (wajib)
+        </button>
       </div>
+
       <div class="mb-3">
         <label class="form-label" for="subjek">Subjek:</label>
         <input
-            type="text"
-            class="form-control"
-            id="subjek"
-            name="subjek"
-            placeholder="mis. Permohonan Izin Surat Keterangan Meninggal Dunia"
-            required
-            />
+          type="text"
+          class="form-control"
+          id="subjek"
+          name="subjek"
+          placeholder="mis. Permohonan Izin Surat Keterangan Meninggal Dunia"
+          required
+        />
       </div>
       <div class="mb-3">
         <label class="form-label" for="narasi">Narasi:</label>
         <textarea
-            class="form-control"
-            id="narasi"
-            name="narasi"
-            minlength="20"
-            required
-            /></textarea>
+          class="form-control"
+          id="narasi"
+          name="narasi"
+          minlength="20"
+          rows="5"
+          required
+        ></textarea>
       </div>
       <div class="mb-3">
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="checkTampilkanTiketPublik" name="isPublik" value="1" checked="">
-          <label class="form-check-label" for="checkTampilkanTiketPublik">Tampilkan tiket secara publik</label>
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="checkTampilkanTiketPublik"
+            name="isPublik"
+            value="1"
+            checked=""
+          />
+          <label class="form-check-label" for="checkTampilkanTiketPublik"
+            >Tampilkan tiket secara publik</label
+          >
         </div>
       </div>
+
       <p>
-      Dengan menekan tombol "Kirim", Anda menyetujui penggunaan data yang dikirimkan untuk keperluan pengolahan tiket.
+        Dengan menekan tombol "Kirim", Anda menyetujui penggunaan data yang
+        dikirimkan untuk keperluan pengolahan tiket.
       </p>
-      <button type="submit" class="btn btn-lg btn-primary" x-bind:class="{ 'disabled': !formValid }">Kirim</button>
+
+      <button type="submit" class="btn btn-lg btn-primary">Kirim</button>
     </form>
   </div>
+
   <script>
     function isNomorHpValid(nomorHp) {
       return /^08[0-9]{5,13}$/.test(nomorHp);
@@ -85,8 +233,8 @@
       if (!isNomorHpValid(form.nomorHp.value)) {
         form.nomorHp.focus();
       } else {
-        if (confirm('Apakah Anda yakin data yang dimasukkan sudah benar?'))
-        form.submit();
+        if (confirm("Apakah Anda yakin data yang dimasukkan sudah benar?"))
+          form.submit();
       }
     }
   </script>
