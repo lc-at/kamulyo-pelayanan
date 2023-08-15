@@ -4,11 +4,7 @@ import re
 from typing import Union
 
 from passlib.hash import pbkdf2_sha256
-from flask_sqlalchemy import SQLAlchemy
-from app.extensions.flask_hashids import HashidsExtension
-
-db = SQLAlchemy()
-hashids = HashidsExtension()
+from app.extensions import db, hashids
 
 
 class User(db.Model):

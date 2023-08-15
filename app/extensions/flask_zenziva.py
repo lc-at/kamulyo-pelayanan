@@ -1,7 +1,7 @@
 import requests
 
 
-class FlaskZenzivaExtension:
+class ZenzivaExtension:
     def __init__(self, app=None):
         if app is not None:
             self.init_app(app)
@@ -18,7 +18,7 @@ class FlaskZenzivaExtension:
 
     def send_whatsapp_message(self, whatsapp_number, message):
         url = 'https://console.zenziva.net/wareguler/api/sendWA/'
-        data= {
+        data = {
             'userkey': self._userkey,
             'passkey': self._passkey,
             'to': whatsapp_number,

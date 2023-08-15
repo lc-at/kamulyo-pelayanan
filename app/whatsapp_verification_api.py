@@ -1,30 +1,23 @@
-import random
 import secrets
-
-import redis
 
 from flask import Blueprint, abort, request
 
-from .extensions.flask_zenziva import FlaskZenzivaExtension
+from app.extensions import zenziva, redis_client
 
 bp = Blueprint('whatsapp_verification_api', __name__)
-zenziva = FlaskZenzivaExtension()
 
 
-class RedisOTPSession:
+class OTPSession:
     def __init__(self, phone_number,
-                 redis_client=None,
+                 redis_client=redis_client,
                  redis_key_prefix='rotp'):
-
-        if not redis_client:
-            redis_client = redis.Redis()
 
         self._redis_client = redis_client
         self._otp_redis_key = f'{redis_key_prefix}:otp:{phone_number}'
         self._auth_token_redis_key = f'{redis_key_prefix}:auth_token:{phone_number}'
 
     def _generate_random_otp(self):
-        return str(random.randint(100000, 999999))
+        return str(secrets.randbelow(1_000_000)).zfill(6)
 
     def _set_random_expiring_otp(self):
         random_otp = self._generate_random_otp()
@@ -34,7 +27,7 @@ class RedisOTPSession:
         otp = self._redis_client.get(self._otp_redis_key)
         if otp:
             return otp.decode('utf-8')
-    
+
     def revoke_otp(self):
         self._redis_client.delete(self._otp_redis_key)
 
@@ -75,7 +68,7 @@ def send_otp():
     if not nomor_whatsapp:
         abort(400)
 
-    otp_session = RedisOTPSession(nomor_whatsapp)
+    otp_session = OTPSession(nomor_whatsapp)
 
     if not otp_session.is_expired():
         return {'message': 'OTP masih berlaku'}, 400
@@ -99,7 +92,7 @@ def get_auth_token():
     if not nomor_whatsapp or not input_otp:
         abort(400)
 
-    otp_session = RedisOTPSession(nomor_whatsapp)
+    otp_session = OTPSession(nomor_whatsapp)
     if otp_session.verify_otp(input_otp):
         return {'message': 'Success', 'auth_token': otp_session.generate_auth_token()}
     else:

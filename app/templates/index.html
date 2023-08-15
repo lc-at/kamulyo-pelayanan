@@ -45,9 +45,7 @@
         <div class="invalid-feedback">
           Nomor WhatsApp tidak valid! Pastikan mengikuti format 08xxxxxxxxxx.
         </div>
-        <div class="valid-feedback">
-          Nomor WhatsApp sudah diverifikasi
-        </div>
+        <div class="valid-feedback">Nomor WhatsApp sudah diverifikasi</div>
 
         <div
           class="modal fade"
@@ -231,6 +229,9 @@
 
     function handleFormSubmit(form) {
       if (!isNomorHpValid(form.nomorHp.value)) {
+        form.nomorHp.focus();
+      } else if (form.authToken.value == "") {
+        alert("Nomor HP belum diverifikasi.");
         form.nomorHp.focus();
       } else {
         if (confirm("Apakah Anda yakin data yang dimasukkan sudah benar?"))

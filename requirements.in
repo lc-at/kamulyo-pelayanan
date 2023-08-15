@@ -5,3 +5,4 @@ hashids
 passlib
 pymysql
 requests
+flask-redis

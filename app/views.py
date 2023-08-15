@@ -1,14 +1,17 @@
-from functools import wraps
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
 from app.models import Tiket, db, hashids
+
+from .whatsapp_verification_api import OTPSession
 
 
 bp = Blueprint('main', __name__)
 
+
 @bp.route('/')
 def index():
     return redirect(url_for('main.buat_tiket_form'))
+
 
 @bp.route('/buat-tiket', methods=['GET', 'POST'])
 def buat_tiket_form():
@@ -19,20 +22,31 @@ def buat_tiket_form():
         subjek = request.form.get('subjek')
         narasi = request.form.get('narasi')
         is_publik = request.form.get('isPublik') == '1'
-        # TODO: add hcaptcha validation
+        auth_token = request.form.get('authToken')
 
-        if not (jenis and nama and nohp and subjek and narasi):
-            flash('Data tidak lengkap!', 'danger')
+        if not (jenis and nama and nohp and subjek and narasi and auth_token):
+            abort(400)
+
+        tiket = Tiket(jenis, nama, nohp, subjek, narasi, is_publik)
+        tiket_is_valid = tiket.validate()
+        auth_token_is_valid = False
+
+        if tiket_is_valid:
+            otp_session = OTPSession(nohp)
+            auth_token_is_valid = otp_session.verify_auth_token(auth_token)
+
+        if not tiket.validate():
+            flash('Data tidak valid!', 'danger')
+        elif not auth_token_is_valid:
+            flash('Token verifikasi tidak valid. Silakan coba lagi dan pastikan nomor HP sudah terverifikasi.',
+                  'danger')
         else:
-            tiket = Tiket(jenis, nama, nohp, subjek, narasi, is_publik)
-            if not tiket.validate():
-                flash('Data tidak valid!', 'danger')
-            else:
-                db.session.add(tiket)
-                db.session.commit()
-                return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
+            db.session.add(tiket)
+            db.session.commit()
+            return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
 
     return render_template('index.html')
+
 
 @bp.route('/next/<tiket_id>')
 @hashids.decode_or_404('tiket_id', first=True)

@@ -1,6 +1,5 @@
 from flask import Flask
-from .models import db, hashids
-from .whatsapp_verification_api import zenziva
+from .extensions import redis_client, zenziva, db, hashids
 
 
 def create_app():
@@ -10,6 +9,7 @@ def create_app():
     db.init_app(app)
     hashids.init_app(app)
     zenziva.init_app(app)
+    redis_client.init_app(app)
 
     from .views import bp as views_bp
     from .admin import bp as admin_bp
