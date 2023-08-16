@@ -1,6 +1,10 @@
 from flask import Flask
 from .extensions import redis_client, zenziva, db, hashids
 
+from .views import bp as views_bp
+from .admin import bp as admin_bp
+from .whatsapp_verification_api import bp as whatsapp_verification_api_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -10,10 +14,6 @@ def create_app():
     hashids.init_app(app)
     zenziva.init_app(app)
     redis_client.init_app(app)
-
-    from .views import bp as views_bp
-    from .admin import bp as admin_bp
-    from .whatsapp_verification_api import bp as whatsapp_verification_api_bp
 
     app.register_blueprint(views_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')

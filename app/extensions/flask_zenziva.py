@@ -26,7 +26,9 @@ class ZenzivaExtension:
         }
         response = requests.post(url, data=data)
         if response.status_code != 201:
-            print(response.text)
-            raise Exception('Failed to send message to ' +
-                            whatsapp_number + ' with message ' + message)
-        return True
+            raise ZenzivaAPIError(response.text)
+        return response.content
+
+
+class ZenzivaAPIError(Exception):
+    pass

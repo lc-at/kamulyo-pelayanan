@@ -2,7 +2,8 @@ import secrets
 
 from flask import Blueprint, abort, request
 
-from app.extensions import zenziva, redis_client
+from app.extensions import redis_client
+from app.messaging import KamulyoOTPMessage
 
 bp = Blueprint('whatsapp_verification_api', __name__)
 
@@ -75,10 +76,8 @@ def send_otp():
 
     otp_code = otp_session.get_and_set_otp_if_none()
 
-    try:
-        zenziva.send_whatsapp_message(nomor_whatsapp,
-                                      'Kode OTP Anda: ' + str(otp_code))
-    except Exception:
+    message = KamulyoOTPMessage(otp_code)
+    if not message.send(nomor_whatsapp):
         otp_session.revoke_otp()
         return {'message': 'OTP gagal dikirim'}, 500
 
