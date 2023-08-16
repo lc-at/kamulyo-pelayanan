@@ -2,6 +2,8 @@ from flask import Blueprint, abort, flash, g, redirect, render_template, request
 
 from app.models import BalasanTiket, Tiket, User, db
 
+from app.messaging import KamulyoTiketUpdatedMessage
+
 bp = Blueprint('admin', __name__)
 
 
@@ -42,6 +44,7 @@ def login():
 
     return render_template('admin/login.html')
 
+
 @bp.route('/logout')
 def logout():
     if g.user:
@@ -53,6 +56,7 @@ def logout():
 @bp.route('/')
 def index():
     return redirect(url_for('admin.login'))
+
 
 @bp.route('/ganti-password', methods=['GET', 'POST'])
 def change_password():
@@ -69,25 +73,30 @@ def change_password():
 
     return render_template('admin/change_password.html')
 
+
 @bp.route('/dashboard')
 def dashboard():
     return render_template('admin/dashboard.html')
+
 
 @bp.route('/tiket-terbuka')
 def tiket_terbuka():
     tikets = Tiket.query.filter_by(selesai=False).all()
     return render_template('admin/tabel_tiket.html', title='Tiket Terbuka', tikets=tikets)
 
+
 @bp.route('/tiket-selesai')
 def tiket_selesai():
     tikets = Tiket.query.filter_by(selesai=True).all()
     return render_template('admin/tabel_tiket.html', title='Tiket Selesai', tikets=tikets)
+
 
 @bp.route('/tiket/<tiket_id>')
 def tiket_detail(tiket_id):
     tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
 
     return render_template('admin/tiket_detail.html', tiket=tiket)
+
 
 @bp.route('/tiket/<tiket_id>/tambahBalasan', methods=['POST'])
 def tiket_tambah_balasan(tiket_id):
@@ -96,8 +105,12 @@ def tiket_tambah_balasan(tiket_id):
     isi_balasan = request.form.get('isiBalasan')
     if not isi_balasan:
         abort(400)
+
     balasan = BalasanTiket(tiket.id, isi_balasan)
     db.session.add(balasan)
     db.session.commit()
+
+    KamulyoTiketUpdatedMessage(tiket).send()
+
     flash('Balasan berhasil ditambahkan', 'success')
     return redirect(url_for('admin.tiket_detail', tiket_id=tiket_id))

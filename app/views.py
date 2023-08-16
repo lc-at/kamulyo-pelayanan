@@ -1,8 +1,8 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
 from app.models import Tiket, db, hashids
-
-from .whatsapp_verification_api import OTPSession
+from app.whatsapp_verification_api import OTPSession
+from app.messaging import KamulyoTiketCreatedMessage
 
 
 bp = Blueprint('main', __name__)
@@ -16,18 +16,18 @@ def index():
 @bp.route('/buat-tiket', methods=['GET', 'POST'])
 def buat_tiket_form():
     if request.method == 'POST':
-        jenis = request.form.get('jenis')
-        nama = request.form.get('nama')
-        nohp = request.form.get('nomorHp')
-        subjek = request.form.get('subjek')
-        narasi = request.form.get('narasi')
+        jenis = request.form.get('jenis', '').strip()
+        nama = request.form.get('nama', '').strip()
+        nohp = request.form.get('nomorHp', '').strip()
+        subjek = request.form.get('subjek', '').strip()
+        narasi = request.form.get('narasi', '').strip()
         is_publik = request.form.get('isPublik') == '1'
         auth_token = request.form.get('authToken')
 
         if not (jenis and nama and nohp and subjek and narasi and auth_token):
             abort(400)
 
-        tiket = Tiket(jenis, nama, nohp, subjek, narasi, is_publik)
+        tiket = Tiket(jenis.strip(), nama, nohp, subjek, narasi, is_publik)
         tiket_is_valid = tiket.validate()
         auth_token_is_valid = False
 
@@ -43,16 +43,12 @@ def buat_tiket_form():
         else:
             db.session.add(tiket)
             db.session.commit()
-            return redirect(url_for('main.form_next', tiket_id=tiket.public_id))
+
+            KamulyoTiketCreatedMessage(tiket).send()
+
+            return render_template('form_next.html', tiket=tiket)
 
     return render_template('index.html')
-
-
-@bp.route('/next/<tiket_id>')
-@hashids.decode_or_404('tiket_id', first=True)
-def form_next(tiket_id):
-    tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
-    return render_template('form_next.html', tiket=tiket)
 
 
 @bp.route('/tiket')
