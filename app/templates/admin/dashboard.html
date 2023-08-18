@@ -1,26 +1,51 @@
 {% extends "admin/base.html" %}
 {% block container %}
-  <h1>Dasbor</h1><br/>
+  <h1>Dasbor</h1>
+  <br />
 
   <p class="mb-4">Anda masuk sebagai <strong>{{ g.user.username }}</strong></p>
 
   <div class="row">
-    {% macro stat_card(bg, fg, title, value) %}
+    {% macro stat_card(bg, fg, title, value, links_to, help_text) %}
       <div class="col text-center">
-        <div class="card bg-{{bg}} text-{{fg}} mb-3 w-100">
-          <div class="card-header">{{ title }}</div>
+        <div class="card bg-{{ bg }} text-{{ fg }} mb-3 w-100">
+          <div class="card-header" title="{{ help_text }}">{{ title }}</div>
+
           <div class="card-body">
             <h4 class="card-title display-1">{{ value }}</h4>
+
             <p class="card-text">
-            <button class="btn btn-secondary w-100">Lihat semua</button>
+              <a
+                href="{{ links_to }}"
+                role="button"
+                class="btn btn-secondary w-100"
+                >Lihat semua</a
+              >
             </p>
           </div>
         </div>
       </div>
     {% endmacro %}
 
-    {{ stat_card('danger', 'white', 'Tiket Baru', 0) }}
-    {{ stat_card('info', 'white', 'Tiket Terbuka', 0) }}
-    {{ stat_card('success', 'white', 'Tiket Selesai', 0) }}
+    {{
+      stat_card(bg='danger', fg='white',
+      title='Tiket Baru', value=tiket_counts_data['baru'],
+      links_to=url_for('admin.tiket_terbuka'),
+      help_text='Tiket yang terbuka dan belum ditanggapi')
+    }}
+
+    {{
+      stat_card(bg='info', fg='white',
+      title='Tiket Terbuka', value=tiket_counts_data['terbuka'],
+      links_to=url_for('admin.tiket_terbuka'),
+      help_text='Tiket yang terbuka')
+    }}
+
+    {{
+      stat_card(bg='success', fg='white',
+      title='Tiket Selesai', value=tiket_counts_data['selesai'],
+      links_to=url_for('admin.tiket_terbuka'),
+      help_text='Tiket yang ditandai sudah selesai')
+    }}
   </div>
 {% endblock %}

@@ -76,7 +76,12 @@ def change_password():
 
 @bp.route('/dashboard')
 def dashboard():
-    return render_template('admin/dashboard.html')
+    tiket_counts_data = {
+        'baru': Tiket.get_tiket_baru_count(),
+        'terbuka': Tiket.get_tiket_terbuka_count(),
+        'selesai': Tiket.get_tiket_selesai_count(),
+    }
+    return render_template('admin/dashboard.html', tiket_counts_data=tiket_counts_data)
 
 
 @bp.route('/tiket-terbuka')

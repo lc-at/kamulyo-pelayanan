@@ -65,6 +65,18 @@ class Tiket(db.Model):
     def public_id(self):
         return hashids.encode(self.id)
 
+    @classmethod
+    def get_tiket_baru_count(cls):
+        return cls.query.filter_by(selesai=False).count()
+
+    @classmethod
+    def get_tiket_terbuka_count(cls):
+        return cls.query.filter_by(selesai=False).count()
+
+    @classmethod
+    def get_tiket_selesai_count(cls):
+        return cls.query.filter_by(selesai=True).count()
+
     def validate(self) -> bool:
         try:
             JenisTiket(self.jenis)
