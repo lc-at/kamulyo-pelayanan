@@ -5,7 +5,11 @@
   <h1>Tiket</h1>
 
   <p class="badge fs-6 bg-info">{{ tiket.jenis|upper }}</p>
-  <p class="badge fs-6 bg-danger">Belum Selesai</p>
+  {% if tiket.selesai %}
+    <p class="badge fs-6 bg-success">Selesai</p>
+  {% else %}
+    <p class="badge fs-6 bg-danger">Belum Selesai</p>
+  {% endif %}
 
   {{ tiket_detail_table(tiket) }}
 
@@ -13,16 +17,56 @@
   {{ tiket_balasan_table(tiket) }}
 
   <h2>Aksi</h2>
-  <form method="post" action="{{ url_for('admin.tiket_tambah_balasan', tiket_id=tiket.id) }}">
-    <label class="form-label">Tambah balasan baru</label>
-    <div class="row">
-      <div class="col-sm-11 mb-3">
-        <textarea class="form-control" name="isiBalasan" rows="3"></textarea>
+  {% if not tiket.selesai %}
+    <h4>Balas Tiket</h4>
+    <form
+      method="post"
+      action="{{ url_for('admin.tiket_tambah_balasan', tiket_id=tiket.id) }}"
+      class="mb-3"
+    >
+      <div class="row">
+        <div class="col-sm-11 mb-3">
+          <textarea
+            class="form-control"
+            name="isiBalasan"
+            rows="3"
+            required
+          ></textarea>
+        </div>
+        <div class="col">
+          <button class="btn btn-lg btn-primary">Kirim</button>
+        </div>
       </div>
-      <div class="col">
-        <button class="btn btn-lg btn-primary">Kirim</button>
-      </div>
-    </div>
-  </form>
+    </form>
 
+    <h4>Tandai Tiket Selesai</h4>
+    <div
+      class="container border border-danger rounded-1 p-3"
+      x-data="{ checked: false }"
+    >
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value=""
+          id="flexCheckDefault"
+          x-model="checked"
+        />
+        <label class="form-check-label" for="flexCheckDefault">
+          Saya yakin tiket ini sudah selesai dan tidak akan dibalas lagi.
+        </label>
+        <br />
+      </div>
+      <a
+        role="button"
+        href="{{ url_for('admin.tiket_tandai_selesai', tiket_id=tiket.id) }}"
+        class="btn btn-lg btn-danger mt-3"
+        x-bind:class="{ disabled: !checked }"
+      >
+        Tandai Selesai
+      </a>
+    </div>
+  {% else %}
+  Tidak ada aksi yang dapat dilakukan karena <mark>tiket sudah ditandai selesai</mark>.
+  {% endif %}
 {% endblock %}

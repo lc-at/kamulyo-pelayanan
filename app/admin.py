@@ -2,7 +2,7 @@ from flask import Blueprint, abort, flash, g, redirect, render_template, request
 
 from app.models import BalasanTiket, Tiket, User, db
 
-from app.messaging import KamulyoTiketUpdatedMessage
+from app.messaging import KamulyoTiketUpdatedMessage, KamulyoTiketClosedMessage
 
 bp = Blueprint('admin', __name__)
 
@@ -105,7 +105,7 @@ def tiket_detail(tiket_id):
 
 @bp.route('/tiket/<tiket_id>/tambahBalasan', methods=['POST'])
 def tiket_tambah_balasan(tiket_id):
-    tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
+    tiket = Tiket.query.filter_by(id=tiket_id, selesai=False).first_or_404()
 
     isi_balasan = request.form.get('isiBalasan')
     if not isi_balasan:
@@ -119,3 +119,16 @@ def tiket_tambah_balasan(tiket_id):
 
     flash('Balasan berhasil ditambahkan', 'success')
     return redirect(url_for('admin.tiket_detail', tiket_id=tiket_id))
+
+
+@bp.route('/tiket/<tiket_id>/tandaiSelesai')
+def tiket_tandai_selesai(tiket_id):
+    tiket = Tiket.query.filter_by(id=tiket_id, selesai=False).first_or_404()
+    tiket.selesai = 1
+
+    db.session.commit()
+
+    KamulyoTiketClosedMessage(tiket).send()
+
+    flash('Tiket berhasil ditandai selesai', 'success')
+    return redirect('url_')
