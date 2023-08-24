@@ -4,7 +4,7 @@ import re
 from typing import Union
 
 from passlib.hash import pbkdf2_sha256
-from app.extensions import db, hashids
+from app.extensions import db, hashids, ticket_attachment_storage
 
 
 class User(db.Model):
@@ -52,6 +52,9 @@ class Tiket(db.Model):
     balasans = db.relationship('BalasanTiket',
                                backref='tiket',
                                lazy=True)
+    attachments = db.relationship('TiketAttachment',
+                                  backref='tiket',
+                                  lazy=True)
 
     def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi, is_publik):
         self.jenis = jenis
@@ -100,6 +103,29 @@ class Tiket(db.Model):
             return None
         # tiket_id is the first
         return cls.query.get(public_tiket_id_decoded[0])
+
+
+class TiketAttachment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    tiket_id = db.Column(db.Integer, db.ForeignKey('tiket.id'), nullable=False)
+    object_name = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, tiket_id, object_name):
+        self.tiket_id = tiket_id
+        self.object_name = object_name
+
+    @classmethod
+    def new_from_stream(cls, tiket_id, stream, filename):
+        # TODO: consider a mechanism to prevent orphan file in storage
+        #       (e.g. delete file if tiket is deleted)
+        #       also when tiket is not saved yet, the file should not be uploaded
+        object_name = ticket_attachment_storage.sanitize_filename(filename)
+        ticket_attachment_storage.put_from_stream(stream, object_name)
+        tiket_attachment = cls(tiket_id, object_name)
+        return tiket_attachment
+
+    def get_public_url(self):
+        return ticket_attachment_storage.get_url(self.object_name)
 
 
 class BalasanTiket(db.Model):

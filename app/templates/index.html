@@ -6,7 +6,11 @@
   </div>
 
   <div x-data>
-    <form method="post" x-on:submit.prevent="handleFormSubmit($el)">
+    <form
+      method="post"
+      x-on:submit.prevent="handleFormSubmit($el)"
+      enctype="multipart/form-data"
+    >
       <div class="mb-3">
         <label class="form-label" for="jenis">Jenis:</label>
         <select name="jenis" id="jenis" class="form-select">
@@ -186,6 +190,7 @@
           required
         />
       </div>
+
       <div class="mb-3">
         <label class="form-label" for="narasi">Narasi:</label>
         <textarea
@@ -197,6 +202,60 @@
           required
         ></textarea>
       </div>
+
+      <div
+        class="mb-3"
+        x-data="{ 
+                  attachmentIds: [1],
+                  addAttachment: function () {
+                    console.log(this.attachmentIds);
+                    if (this.attachmentIds.length > 0) {
+                      this.attachmentIds.push(this.attachmentIds.slice(-1)[0] + 1);
+                    } else {
+                      this.attachmentIds.push(1);
+                    }
+                  },
+                  removeAttachment: function (attachmentId) {
+                    this.attachmentIds = this.attachmentIds.filter((id) => id != attachmentId);
+                  },
+                }"
+      >
+        <label class="form-label" for="lampiran"
+          >Lampiran (jika diperlukan):</label
+        >
+        <p>
+          <small class="text-muted"
+            >Ukuran maksimal 5 MB. Format yang diterima: JPG, PNG, PDF.</small
+          >
+        </p>
+
+        <template x-for="attachmentId in attachmentIds" :key="attachmentId">
+          <div class="input-group mb-1">
+            <input
+              type="file"
+              class="form-control"
+              accept="image/*,application/pdf"
+              name="lampiran"
+            />
+            <button
+              class="btn btn-outline-danger"
+              x-on:click="removeAttachment(`${attachmentId}`)"
+              type="button"
+            >
+              Hapus
+            </button>
+          </div>
+        </template>
+
+        <button
+          type="button"
+          x-on:click="addAttachment()"
+          class="btn btn-sm btn-outline-secondary mt-2"
+        >
+          Tambahkan lampiran
+        </button>
+      </div>
+
       <div class="mb-3">
         <div class="form-check form-switch">
           <input
@@ -205,7 +264,6 @@
             id="checkTampilkanTiketPublik"
             name="isPublik"
             value="1"
-            checked=""
           />
           <label class="form-check-label" for="checkTampilkanTiketPublik"
             >Tampilkan tiket secara publik</label

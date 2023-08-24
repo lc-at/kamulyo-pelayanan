@@ -1,6 +1,6 @@
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
-from app.models import Tiket, db, hashids
+from app.models import Tiket, TiketAttachment, db, hashids
 from app.whatsapp_verification_api import OTPSession
 from app.messaging import KamulyoTiketCreatedMessage
 
@@ -23,28 +23,45 @@ def buat_tiket_form():
         narasi = request.form.get('narasi', '').strip()
         is_publik = request.form.get('isPublik') == '1'
         auth_token = request.form.get('authToken')
+        lampirans = request.files.getlist('lampiran')
 
         if not (jenis and nama and nohp and subjek and narasi and auth_token):
             abort(400)
 
-        tiket = Tiket(jenis.strip(), nama, nohp, subjek, narasi, is_publik)
-        tiket_is_valid = tiket.validate()
-        auth_token_is_valid = False
+        for lampiran in lampirans:
+            if not lampiran.filename:
+                continue
+            extension = lampiran.filename.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png', 'pdf']:
+                abort(400)
 
-        if tiket_is_valid:
-            otp_session = OTPSession(nohp)
-            auth_token_is_valid = otp_session.verify_auth_token(auth_token)
+        tiket = Tiket(jenis.strip(), nama, nohp, subjek, narasi, is_publik)
+
+        otp_session = OTPSession(nohp)
 
         if not tiket.validate():
             flash('Data tidak valid!', 'danger')
-        elif not auth_token_is_valid:
+        elif not otp_session.verify_auth_token(auth_token):
             flash('Token verifikasi tidak valid. Silakan coba lagi dan pastikan nomor HP sudah terverifikasi.',
                   'danger')
         else:
+            otp_session.revoke_auth_token()
             db.session.add(tiket)
             db.session.commit()
 
+            for lampiran in lampirans:
+                if not lampiran.filename:
+                    continue
+
+                unique_filename = f'{tiket.public_id}_{lampiran.filename}'
+                new_lampiran = TiketAttachment.new_from_stream(tiket_id=tiket.id,
+                                                               stream=lampiran.stream,
+                                                               filename=unique_filename)
+                db.session.add(new_lampiran)
+
             KamulyoTiketCreatedMessage(tiket).send()
+
+            db.session.commit()
 
             return render_template('form_next.html', tiket=tiket)
 

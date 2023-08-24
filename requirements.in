@@ -1,8 +1,9 @@
 flask
+flask-minio
+flask-redis
 flask-sqlalchemy
 gunicorn
 hashids
 passlib
 pymysql
 requests
-flask-redis

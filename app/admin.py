@@ -131,4 +131,4 @@ def tiket_tandai_selesai(tiket_id):
     KamulyoTiketClosedMessage(tiket).send()
 
     flash('Tiket berhasil ditandai selesai', 'success')
-    return redirect('url_')
+    return redirect(url_for('admin.tiket_detail', tiket_id=tiket_id))

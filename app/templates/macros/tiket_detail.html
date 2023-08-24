@@ -26,6 +26,21 @@
         tiket.tgl_dibuat)
       }}
     </table>
+
+    <label class="form-label">
+      Lampiran:
+      <ol>
+        {% for attachment in tiket.attachments %}
+          <li>
+            <a href="{{ attachment.get_public_url() }}" target="_blank"
+              >{{ attachment.object_name }}</a
+            >
+          </li>
+        {% endfor %}
+      </ol>
+    </label>
+    <br />
+
     <label class="form-label">
       Narasi:
       <button
@@ -34,6 +49,7 @@
         x-text="show ? 'Sembunyikan' : 'Tampilkan'"
       ></button>
     </label>
+
     <div class="border border-info rounded-2 p-3 font-monospace" x-show="show">
       {{ tiket.narasi }}
     </div>
