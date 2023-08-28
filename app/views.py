@@ -28,13 +28,6 @@ def buat_tiket_form():
         if not (jenis and nama and nohp and subjek and narasi and auth_token):
             abort(400)
 
-        for lampiran in lampirans:
-            if not lampiran.filename:
-                continue
-            extension = lampiran.filename.split('.')[-1].lower()
-            if extension not in ['jpg', 'jpeg', 'png', 'pdf']:
-                abort(400)
-
         tiket = Tiket(jenis.strip(), nama, nohp, subjek, narasi, is_publik)
 
         otp_session = OTPSession(nohp)

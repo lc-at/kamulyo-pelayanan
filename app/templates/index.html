@@ -224,19 +224,12 @@
           >Lampiran (jika diperlukan):</label
         >
         <p>
-          <small class="text-muted"
-            >Ukuran maksimal 5 MB. Format yang diterima: JPG, PNG, PDF.</small
-          >
+          <small class="text-muted">Ukuran maksimal 5 MB.</small>
         </p>
 
         <template x-for="attachmentId in attachmentIds" :key="attachmentId">
           <div class="input-group mb-1">
-            <input
-              type="file"
-              class="form-control"
-              accept="image/*,application/pdf"
-              name="lampiran"
-            />
+            <input type="file" class="form-control" name="lampiran" />
             <button
               class="btn btn-outline-danger"
               x-on:click="removeAttachment(`${attachmentId}`)"
