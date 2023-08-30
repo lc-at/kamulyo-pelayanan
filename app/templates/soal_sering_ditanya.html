@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block container %}
+  <h1 class="mb-3">Soal Sering Ditanya</h1>
+  <p>
+    Berikut adalah daftar pertanyaan yang sering ditanyakan (Soal Sering Ditanya
+    atau <i>Frequently Asked Questions</i>).
+  </p>
+
+  <div class="accordion" id="faqAccordion">
+    {% macro faq_item(q_id, question) %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq{{ q_id }}Heading">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#faq{{ q_id }}Collapse"
+            aria-expanded="true"
+            aria-controls="#faq{{ q_id }}Collapse"
+          >
+            {{ question }}
+          </button>
+        </h2>
+        <div
+          id="faq{{ q_id }}Collapse"
+          class="accordion-collapse collapse"
+          aria-labelledby="faq{{ q_id }}Heading"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">{{ caller() }}</div>
+        </div>
+      </div>
+    {% endmacro %}
+
+    {% call faq_item(1, 'Apa itu KamulyoPelayanan?') %}
+      KamulyoPelayanan adalah sistem pelayanan masyarakat berbasis tiket yang
+      dirancang untuk memfasilitasi masyarakat dalam membuat pengaduan atau
+      pengajuan dalam Desa Jatimulyo, Kabupaten Bantul, Daerah Istimewa
+      Yogyakarta. Sistem ini memungkinkan warga untuk mengajukan masalah atau
+      kebutuhan mereka melalui tiket berisi informasi seperti nama, nomor
+      WhatsApp (yang akan diverifikasi melalui OTP), subjek, sarasi, dan
+      sampiran jika diperlukan.
+    {% endcall %}
+
+    {% call faq_item(2, 'Bagaimana cara mengajukan tiket pengaduan?') %}
+      Untuk mengajukan tiket pengaduan di KamulyoPelayanan, ikuti
+      langkah-langkah berikut:
+
+      <ol>
+        <li>Buka platform KamulyoPelayanan.</li>
+        <li>Pilih opsi "Buat Tiket" pada halaman utama.</li>
+        <li>
+          Isi informasi yang diminta. Pastikan Anda mengisi informasi dengan
+          benar dan lengkap.
+        </li>
+        <li>
+          Setelah semua informasi terisi, kirim tiket Anda dengan menekan tombol
+          "Kirim".
+        </li>
+        <li>
+          Anda akan menerima konfirmasi melalui WhatsApp terkait status tiket
+          Anda dan langkah-langkah selanjutnya.
+        </li>
+      </ol>
+    {% endcall %}
+
+    {% call faq_item(3, 'Apakah setiap pengajuan memerlukan lampiran?') %}
+      Tidak, lampiran hanya diperlukan jika dibutuhkan untuk mendukung pengaduan
+      atau pengajuan Anda. Jika masalah Anda dapat dijelaskan dengan baik tanpa
+      lampiran, itu sudah cukup. Namun, jika Anda merasa lampiran seperti foto
+      atau dokumen akan membantu menjelaskan situasi dengan lebih baik, Anda
+      dianjurkan untuk menyertakannya.
+    {% endcall %}
+
+    {% call faq_item(4, 'Berapa lama saya harus menunggu respons setelah mengajukan tiket?') %}
+      Waktu respons dapat bervariasi tergantung pada kompleksitas masalah dan
+      antrian tiket. Tim KamulyoPelayanan akan berusaha sebaik mungkin untuk
+      memberikan respons sesegera mungkin (kami akan mengusahakan agar setiap
+      tiket bisa diselesaikan dalam jangka waktu 1x24 jam).
+    {% endcall %}
+
+    {% call faq_item(5, 'Bisakah saya mengajukan permintaan non-pengaduan melalui sistem ini?') %}
+      Tentu saja! Selain pengaduan, KamulyoPelayanan juga menerima pengajuan
+      permintaan seperti izin tertentu, permohonan pelayanan, atau hal lain yang
+      memerlukan tindakan dari pihak desa. Pastikan Anda memilih "Pengajuan" di
+      opsi Jenis ketika membuat tiket.
+    {% endcall %}
+
+    {% call faq_item(6, 'Apakah saya bisa melihat riwayat semua tiket yang pernah saya ajukan?') %}
+      Tidak. KamulyoPelayanan didesain untuk bisa bekerja dengan cara yang
+      sederhana. Tiket Anda akan diberikan nomor ID yang bisa Anda gunakan untuk
+      melacak status tiket. Anda juga akan diberikan notifikasi melalui pesan
+      WhatsApp ke nomor yang Anda gunakan untuk membuat tiket terkait
+      perkembangan tiket.
+    {% endcall %}
+  </div>
+{% endblock %}

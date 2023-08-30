@@ -89,3 +89,8 @@ def status_tiket(tiket_id):
 def papan_aduan_publik():
     tikets = Tiket.query.filter_by(is_publik=True).all()
     return render_template('papan_aduan_publik.html', tikets=tikets)
+
+
+@bp.route('/soal-sering-ditanya')
+def soal_sering_ditanya():
+    return render_template('soal_sering_ditanya.html')
