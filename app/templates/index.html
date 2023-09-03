@@ -5,7 +5,7 @@
     <p>Satu formulir untuk semuanya.</p>
   </div>
 
-  <div x-data>
+  <div x-data="{jenis: 'pengaduan'}">
     <form
       method="post"
       x-on:submit.prevent="handleFormSubmit($el)"
@@ -13,8 +13,8 @@
     >
       <div class="mb-3">
         <label class="form-label" for="jenis">Jenis:</label>
-        <select name="jenis" id="jenis" class="form-select">
-          <option value="pengaduan">Pengaduan</option>
+        <select name="jenis" id="jenis" x-model="jenis" class="form-select">
+          <option value="pengaduan" selected>Pengaduan</option>
           <option value="pengajuan">Pengajuan</option>
         </select>
       </div>
@@ -249,7 +249,7 @@
         </button>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3" x-show="jenis == 'pengaduan'">
         <div class="form-check form-switch">
           <input
             class="form-check-input"

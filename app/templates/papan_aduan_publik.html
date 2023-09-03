@@ -4,8 +4,15 @@
   <h1 class="mb-3">Papan Aduan Publik</h1>
 
   <div class="list-group">
+    {% if not tikets %}
+      <p class="text-center">Belum ada aduan publik</p>
+    {% endif %}
+
     {% for tiket in tikets %}
-      <a href="{{ url_for('main.status_tiket', tiket_id=tiket.public_id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+      <a
+        href="{{ url_for('main.status_tiket', tiket_id=tiket.public_id) }}"
+        class="list-group-item list-group-item-action flex-column align-items-start"
+      >
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">
             {{ tiket.subjek }}
@@ -18,5 +25,4 @@
       </a>
     {% endfor %}
   </div>
-
 {% endblock %}
