@@ -72,16 +72,16 @@ def send_otp():
     otp_session = OTPSession(nomor_whatsapp)
 
     if not otp_session.is_expired():
-        return {'message': 'OTP masih berlaku'}, 400
+        return {'message': 'Kode verifikasi masih berlaku'}, 400
 
     otp_code = otp_session.get_and_set_otp_if_none()
 
     message = KamulyoOTPMessage(otp_code)
     if not message.send(nomor_whatsapp):
         otp_session.revoke_otp()
-        return {'message': 'OTP gagal dikirim'}, 500
+        return {'message': 'Kode verifikasi gagal dikirim'}, 500
 
-    return {'message': 'OTP berhasil dikirim'}
+    return {'message': 'Kode verifikasi berhasil dikirim'}
 
 
 @bp.route('/auth_token')
@@ -93,6 +93,6 @@ def get_auth_token():
 
     otp_session = OTPSession(nomor_whatsapp)
     if otp_session.verify_otp(input_otp):
-        return {'message': 'Success', 'auth_token': otp_session.generate_auth_token()}
+        return {'message': 'Sukses', 'auth_token': otp_session.generate_auth_token()}
     else:
-        return {'message': 'Invalid OTP'}, 400
+        return {'message': 'Kode verifikasi tidak valid'}, 400
