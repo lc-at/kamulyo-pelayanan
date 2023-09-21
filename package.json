@@ -1,5 +1,14 @@
 {
   "dependencies": {
-    "prettier-plugin-jinja-template": "^1.0.0"
+    "bootstrap": "^5.3.2",
+    "bootswatch": "^5.3.2",
+    "prettier-plugin-jinja-template": "^1.0.0",
+    "sass": "^1.68.0"
+  },
+  "scripts": {
+    "build": "npm run build:css",
+    "build:css": "sass -I node_modules app/assets/sass:app/static/ --no-source-map --style=compressed",
+    "dev": "npm run dev:css",
+    "dev:css": "sass -I node_modules app/assets/sass:app/static/ --watch --no-source-map --style=compressed"
   }
 }
