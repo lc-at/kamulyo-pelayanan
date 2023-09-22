@@ -1,21 +1,29 @@
 $web-font-path: "https://fonts.googleapis.com/css?family=Jost%3A400%2C700%2C600%2C500&display=swap&ver=3.6.7";
 $font-family-sans-serif: "Jost", sans-serif;
-$font-size-base: 1rem;
+$font-size-base: 1.1rem;
+$body-color: #000000;
+$enable-caret: false;
 
 @import "bootswatch/dist/zephyr/variables";
 
 $theme-colors: (
-  "primary":    #415746,
-  "secondary":  $secondary,
-  "success":    $success,
-  "info":       $info,
-  "warning":    $warning,
-  "danger":     $danger,
-  "light":      $light,
-  "dark":       $dark
+  "primary": #787860,
+  "secondary": #e5dcd4,
+  "success": #28a745,
+  "info": #17a2b8,
+  "warning": #ffc107,
+  "danger": #dc3545,
+  "light": #fff5ec,
+  "dark": #343a40,
 );
 
 $border-radius: 0.15rem;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootswatch/dist/zephyr/bootswatch";
+
+.bg-pattern-1 {
+  background-image: url("/static/images/pattern_1.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}

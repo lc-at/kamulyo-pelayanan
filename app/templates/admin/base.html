@@ -7,18 +7,31 @@
         KamulyoPelayanan
         <small><span class="badge bg-danger small">adm</span></small>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarColor02"
+        aria-controls="navbarColor02"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarColor02">
         {% if g.user %}
           <ul class="navbar-nav me-auto">
             {%- macro nav_item(title, ref, ref_is_route=True) -%}
-              {%- set active = (request.endpoint == ref) %}
-              <li class="nav-item {% if active %}active{% endif %}>">
-                <a class="nav-link" href="{{ url_for(ref) if ref_is_route else ref }}">
+              {%- set active = (request.endpoint == ref) -%}
+              <li class="nav-item">
+                <a
+                  class="nav-link {% if active %}active{% endif %}"
+                  href="{{ url_for(ref) if ref_is_route else ref }}"
+                >
                   {{ title }}
-                  {%- if active %}<span class="visually-hidden">(current)</span>{% endif %}
+                  {%- if active -%}
+                    <span class="visually-hidden">(current)</span>
+                  {% endif %}
                 </a>
               </li>
             {%- endmacro -%}
@@ -26,7 +39,6 @@
             {{ nav_item('Dasbor', 'admin.dashboard') }}
             {{ nav_item('Tiket Terbuka', 'admin.tiket_terbuka') }}
             {{ nav_item('Tiket Selesai', 'admin.tiket_selesai') }}
-
           </ul>
           <ul class="navbar-nav ms-auto">
             {{ nav_item('Ganti Password', 'admin.change_password') }}
