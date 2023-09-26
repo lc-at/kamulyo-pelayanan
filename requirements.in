@@ -1,4 +1,5 @@
 flask
+flask-migrate
 flask-minio
 flask-redis
 flask-sqlalchemy

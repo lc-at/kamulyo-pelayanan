@@ -1,5 +1,6 @@
 from flask import Flask
-from .extensions import redis_client, zenziva, db, hashids, storage, ticket_attachment_storage
+from .extensions import (redis_client, zenziva, db,
+                         hashids, storage, ticket_attachment_storage, migrate)
 
 from .views import bp as views_bp
 from .admin import bp as admin_bp
@@ -12,6 +13,7 @@ def create_app():
     app.config.from_prefixed_env('FLASK')
     db.init_app(app)
     hashids.init_app(app)
+    migrate.init_app(app, db)
     redis_client.init_app(app)
     storage.init_app(app)
     ticket_attachment_storage.init_app(app)
