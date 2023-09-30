@@ -132,3 +132,14 @@ def tiket_tandai_selesai(tiket_id):
 
     flash('Tiket berhasil ditandai selesai', 'success')
     return redirect(url_for('admin.tiket_detail', tiket_id=tiket_id))
+
+
+@bp.route('/tiket/<tiket_id>/delete')
+def tiket_delete(tiket_id):
+    tiket = Tiket.query.filter_by(id=tiket_id, selesai=False).first_or_404()
+    if tiket.selesai:
+        abort(400)
+    db.session.delete(tiket)
+    db.session.commit()
+    flash('Tiket berhasil dihapus', 'success')
+    return redirect(url_for('admin.tiket_terbuka'))

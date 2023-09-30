@@ -49,12 +49,13 @@ class Tiket(db.Model):
     selesai = db.Column(db.Boolean, nullable=False, default=False)
     tgl_dibuat = db.Column(
         db.DateTime, nullable=False, server_default=db.func.now())
+    dilihat_count = db.Column(db.Integer, nullable=False, default=0)
     balasans = db.relationship('BalasanTiket',
                                backref='tiket',
-                               lazy=True)
+                               lazy=True, cascade='all, delete-orphan')
     attachments = db.relationship('TiketAttachment',
                                   backref='tiket',
-                                  lazy=True)
+                                  lazy=True, cascade='all, delete-orphan')
 
     def __init__(self, jenis, nama_pengirim, nohp_pengirim, subjek, narasi, is_publik):
         self.jenis = jenis
@@ -107,7 +108,8 @@ class Tiket(db.Model):
 
 class TiketAttachment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    tiket_id = db.Column(db.Integer, db.ForeignKey('tiket.id'), nullable=False)
+    tiket_id = db.Column(db.Integer, db.ForeignKey(
+        'tiket.id', ondelete='CASCADE'), nullable=False)
     object_name = db.Column(db.String(255), nullable=False)
 
     def __init__(self, tiket_id, object_name):
@@ -130,7 +132,8 @@ class TiketAttachment(db.Model):
 
 class BalasanTiket(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    tiket_id = db.Column(db.Integer, db.ForeignKey('tiket.id'), nullable=False)
+    tiket_id = db.Column(db.Integer, db.ForeignKey(
+        'tiket.id', ondelete='CASCADE'), nullable=False)
     isi = db.Column(db.Text, nullable=False)
     tgl_dibuat = db.Column(db.DateTime,
                            nullable=False,

@@ -82,6 +82,8 @@ def cari_tiket():
 @hashids.decode_or_404('tiket_id', first=True)
 def status_tiket(tiket_id):
     tiket = Tiket.query.filter_by(id=tiket_id).first_or_404()
+    tiket.dilihat_count += 1
+    db.session.commit()
     return render_template('status_tiket.html', tiket=tiket)
 
 
