@@ -21,7 +21,10 @@
           <small class="text-muted">{{ tiket.tgl_dibuat }}</small>
         </div>
         <p class="mb-1">{{ tiket.narasi|truncate(100) }}...</p>
-        <small class="text-muted">Balasan: 10 Viewer: 100</small>
+        <small class="text-muted">
+          Balasan: {{ tiket.balasans|length }} Dilihat:
+          {{ tiket.dilihat_count }}</small
+        >
       </a>
     {% endfor %}
   </div>

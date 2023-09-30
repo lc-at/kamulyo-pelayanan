@@ -1,7 +1,8 @@
 {% extends "admin/base.html" %}
 
 {% block container %}
-  <h1>{{ title }}</h1><br/>
+  <h1>{{ title }}</h1>
+  <br />
 
   <div class="table-responsive">
     <table class="table table-striped table-sm">
@@ -15,17 +16,32 @@
         </tr>
       </thead>
       <tbody>
-        {%- for tiket in tikets %}
-        <tr>
-          <th class="font-monospace" scope="row">{{ tiket.public_id }}</th>
-          <td>{{ tiket.tgl_dibuat }}</td>
-          <td>{{ tiket.nama_pengirim }}</td>
-          <td>[{{ tiket.jenis | upper }}] {{ tiket.subjek }}</td>
-          <td>
-            <a role="button" class="btn btn-primary btn-sm" href="{{ url_for('admin.tiket_detail', tiket_id=tiket.id) }}">Lihat</button>
-          </td>
-        </tr>
-        {% endfor -%}
+        {%- for tiket in tikets -%}
+          <tr>
+            <th class="font-monospace" scope="row">{{ tiket.public_id }}</th>
+            <td>{{ tiket.tgl_dibuat }}</td>
+            <td>{{ tiket.nama_pengirim }}</td>
+            <td>[{{ tiket.jenis | upper }}] {{ tiket.subjek }}</td>
+            <td>
+              <a
+                role="button"
+                class="btn btn-primary btn-sm"
+                href="{{ url_for('admin.tiket_detail', tiket_id=tiket.id) }}"
+                >Lihat</a
+              >
+              {% if not tiket.selesai %}
+                <a
+                  role="button"
+                  class="btn btn-danger btn-sm"
+                  href="{{ url_for('admin.tiket_delete', tiket_id=tiket.id) }}"
+                  onclick="return confirm('Apakah Anda yakin ingin menghapus tiket ini? Hanya hapus jika tiket merupakan spam dan tidak perlu ditangani (menghapus berbeda dengan menandai tiket selesai)');"
+                >
+                  Hapus
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {%- endfor -%}
       </tbody>
     </table>
   </div>
