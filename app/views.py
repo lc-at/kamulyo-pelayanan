@@ -19,6 +19,7 @@ def buat_tiket_form():
         jenis = request.form.get('jenis', '').strip()
         nama = request.form.get('nama', '').strip()
         nohp = request.form.get('nomorHp', '').strip()
+        nik = request.form.get('nik', '').strip()
         subjek = request.form.get('subjek', '').strip()
         narasi = request.form.get('narasi', '').strip()
         is_publik = request.form.get('isPublik') == '1'
@@ -28,7 +29,9 @@ def buat_tiket_form():
         if not (jenis and nama and nohp and subjek and narasi and auth_token):
             abort(400)
 
-        tiket = Tiket(jenis.strip(), nama, nohp, subjek, narasi, is_publik)
+        tiket = Tiket(jenis, nama, nohp, subjek, narasi, is_publik)
+        if nik:
+            tiket.nik = nik
 
         otp_session = OTPSession(nohp)
 

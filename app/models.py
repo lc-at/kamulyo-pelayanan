@@ -42,6 +42,7 @@ class Tiket(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     is_publik = db.Column(db.Boolean, nullable=False, default=False)
     jenis = db.Column(db.String(100), nullable=False)
+    nik = db.Column(db.String(20), nullable=True)
     nama_pengirim = db.Column(db.String(255), nullable=False)
     nohp_pengirim = db.Column(db.String(20), nullable=False)
     subjek = db.Column(db.String(255), nullable=False)
